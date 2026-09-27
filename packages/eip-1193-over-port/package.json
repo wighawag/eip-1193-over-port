@@ -1,0 +1,51 @@
+{
+	"name": "eip-1193-over-port",
+	"version": "0.0.0",
+	"description": "EIP-1193 request over a MessagePort: serve a provider on one thread, use it from another (a worker)",
+	"keywords": [
+		"eip-1193",
+		"ethereum",
+		"provider",
+		"worker",
+		"messageport",
+		"messagechannel"
+	],
+	"author": "wighawag <wighawag@gmail.com>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/wighawag/eip-1193-over-port.git",
+		"directory": "packages/eip-1193-over-port"
+	},
+	"homepage": "https://github.com/wighawag/eip-1193-over-port#readme",
+	"publishConfig": {
+		"access": "public"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"dependencies": {
+		"eip-1193": "^0.7.0"
+	},
+	"devDependencies": {
+		"@types/node": "^25.2.0",
+		"as-soon": "^0.1.5",
+		"tsx": "^4.21.0",
+		"typescript": "^5.3.3",
+		"vitest": "^4.0.18"
+	},
+	"scripts": {
+		"build": "tsc",
+		"dev": "as-soon -w src pnpm build",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	}
+}
