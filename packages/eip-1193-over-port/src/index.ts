@@ -40,8 +40,8 @@ export type RequestProvider = {
 	request(args: EIP1193GenericRequest): Promise<unknown> | unknown;
 };
 
-const REQUEST = 'eip-1193-over-port/request';
-const RESPONSE = 'eip-1193-over-port/response';
+const REQUEST = '@eip-1193/over-port/request';
+const RESPONSE = '@eip-1193/over-port/response';
 
 /** How deep an error's `cause` chain is carried across. Deeper causes are dropped. */
 const MAX_CAUSE_DEPTH = 4;
@@ -166,7 +166,7 @@ export function providerOverPort(port: PortLike): ProviderOverPort {
 		if (closed) {
 			return Promise.reject(
 				new ProviderOverPortError({
-					message: 'eip-1193-over-port: this provider was closed',
+					message: '@eip-1193/over-port: this provider was closed',
 					code: 4900,
 				}),
 			);
@@ -183,7 +183,7 @@ export function providerOverPort(port: PortLike): ProviderOverPort {
 				pending.delete(id);
 				reject(
 					new ProviderOverPortError({
-						message: `eip-1193-over-port: the request for ${args.method} could not be sent: ${messageOf(error)}`,
+						message: `@eip-1193/over-port: the request for ${args.method} could not be sent: ${messageOf(error)}`,
 						code: -32602,
 					}),
 				);
@@ -198,7 +198,7 @@ export function providerOverPort(port: PortLike): ProviderOverPort {
 		for (const {reject} of pending.values()) {
 			reject(
 				new ProviderOverPortError({
-					message: 'eip-1193-over-port: this provider was closed',
+					message: '@eip-1193/over-port: this provider was closed',
 					code: 4900,
 				}),
 			);
@@ -218,7 +218,7 @@ function answer(port: PortLike, response: ResponseMessage): void {
 			type: RESPONSE,
 			id: response.id,
 			error: {
-				message: `eip-1193-over-port: the provider's answer could not be sent across the port: ${messageOf(error)}`,
+				message: `@eip-1193/over-port: the provider's answer could not be sent across the port: ${messageOf(error)}`,
 				code: -32603,
 			},
 		} satisfies ResponseMessage);

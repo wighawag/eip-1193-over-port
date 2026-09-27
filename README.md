@@ -1,17 +1,17 @@
-# eip-1193-over-port
+# @eip-1193/over-port
 
 EIP-1193 `request` over a `MessagePort`: serve a provider on one thread, and use it from another.
 
 A provider is an object with methods, so it cannot be structured-cloned into a Web Worker. A `MessagePort` can be transferred into one. So the thread that holds the real provider serves it on one end of a `MessageChannel`, and any other thread turns the other end back into a provider. Once the ports are handed over, requests go straight between those two threads: the page that created the channel relays nothing.
 
 ```sh
-pnpm add eip-1193-over-port
+pnpm add @eip-1193/over-port
 ```
 
 ## Usage
 
 ```ts
-import {serveProvider, providerOverPort} from 'eip-1193-over-port';
+import {serveProvider, providerOverPort} from '@eip-1193/over-port';
 
 // wherever the real provider lives (the page for a wallet, or a worker running a node)
 serveProvider(provider, port1);
