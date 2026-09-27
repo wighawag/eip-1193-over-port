@@ -1,6 +1,6 @@
 {
 	"name": "@eip-1193/over-port",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "EIP-1193 request over a MessagePort: serve a provider on one thread, use it from another (a worker)",
 	"keywords": [
 		"eip-1193",
