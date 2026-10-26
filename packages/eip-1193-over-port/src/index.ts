@@ -13,8 +13,10 @@
  * subscriptions) do not: this is a transport for request/response callers.
  */
 import type {
+	CoreMethods,
 	EIP1193GenericRequest,
-	EIP1193ProviderWithoutEvents,
+	RequestRPC,
+	RPCMethods,
 } from 'eip-1193';
 
 /**
@@ -35,7 +37,15 @@ export type PortLike = {
 	start?: () => void;
 };
 
-/** Anything with an EIP-1193 `request`, typed loosely: the server forwards whatever method arrives. */
+/**
+ * Anything with an EIP-1193 `request`, typed loosely: the server forwards whatever method arrives.
+ *
+ * Deliberately NOT a method table. The method name comes off the port as a runtime string, so the
+ * server cannot narrow it, and it calls no method of its own. Typing this as a `RequestRPC<...>`
+ * would only make {@link serveProvider} reject providers typed with another table (a node provider
+ * against a wallet table, or the reverse) without making anything safer. Every typed provider
+ * (wallet, node, HTTP node, core) is accepted as is.
+ */
 export type RequestProvider = {
 	request(args: EIP1193GenericRequest): Promise<unknown> | unknown;
 };
@@ -128,20 +138,52 @@ export function serveProvider(
 	};
 }
 
-/** What {@link providerOverPort} returns: a provider, plus a way to let go of the port. */
-export type ProviderOverPort = EIP1193ProviderWithoutEvents & {
-	/**
-	 * Stops listening, and rejects every request still waiting and every later
-	 * one. Does not close the port itself, which the caller owns.
-	 */
-	close(): void;
-};
+/**
+ * What {@link providerOverPort} returns: a provider, plus a way to let go of the port.
+ *
+ * `T` is the method table the far end serves. It defaults to `CoreMethods`, the methods a browser
+ * wallet, a JSON-RPC node and a plain HTTP node all serve, so the default is an
+ * `EIP1193CoreProvider` and promises no `wallet_*`, no node introspection and no subscriptions
+ * (events do not cross the port anyway).
+ */
+export type ProviderOverPort<T extends RPCMethods = CoreMethods> =
+	RequestRPC<T> & {
+		/**
+		 * Stops listening, and rejects every request still waiting and every later
+		 * one. Does not close the port itself, which the caller owns.
+		 */
+		close(): void;
+	};
 
 /**
  * An EIP-1193 provider whose `request` is answered by whatever
  * {@link serveProvider} serves on the other end of `port`.
+ *
+ * The port forwards any method, so what the result can serve depends on the provider on the far
+ * end, which this side cannot see. By default it is typed with `CoreMethods`, which every provider
+ * serves. A caller who knows more names the table, an unchecked claim like a cast:
+ *
+ *     const wallet = providerOverPort<WalletMethods>(port); // the far end serves a wallet
+ *     const node = providerOverPort<NodeMethods>(port); // the far end serves a JSON-RPC node
+ *
+ * The non-generic overload comes first so that, without a type argument, the result is always the
+ * core provider. A lone generic would infer `T` from an annotated target instead
+ * (`const p: EIP1193CoreProvider = providerOverPort(port)` would infer the bare `RPCMethods`
+ * constraint and fail).
  */
-export function providerOverPort(port: PortLike): ProviderOverPort {
+export function providerOverPort(port: PortLike): ProviderOverPort;
+/**
+ * An EIP-1193 provider over `port`, typed with the method table `T` the far end serves
+ * (`WalletMethods`, `NodeMethods`, ...). Nothing checks that claim: it is like a cast.
+ */
+export function providerOverPort<T extends RPCMethods>(
+	port: PortLike,
+): ProviderOverPort<T>;
+// The overloads carry the types; the implementation only needs a shape both results satisfy.
+export function providerOverPort(port: PortLike): {
+	request: unknown;
+	close(): void;
+} {
 	let nextId = 0;
 	let closed = false;
 	const pending = new Map<
@@ -206,7 +248,7 @@ export function providerOverPort(port: PortLike): ProviderOverPort {
 		pending.clear();
 	};
 
-	return {request, close} as unknown as ProviderOverPort;
+	return {request, close};
 }
 
 function answer(port: PortLike, response: ResponseMessage): void {

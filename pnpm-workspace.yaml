@@ -3,3 +3,8 @@ packages:
 allowBuilds:
   '@parcel/watcher': false
   esbuild: false
+# Exempt from pnpm's minimum release age by exact version, checked by hand: eip-1193 0.7.2
+# (jolly-roger-eth/eip-1193 5153b38) only drops `engines` from the published manifest, over
+# 0.7.1 which adds CoreMethods / EIP1193CoreProvider. Remove once it is older than the floor.
+minimumReleaseAgeExclude:
+  - eip-1193@0.7.2

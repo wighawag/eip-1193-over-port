@@ -53,6 +53,21 @@ serveProvider(window.ethereum, port1);
 worker.postMessage({provider: port2}, [port2]);
 ```
 
+## Typing
+
+The port forwards any `{method, params}`, so what the remote provider can serve depends on what was handed to `serveProvider` on the far end, which this side cannot see. `providerOverPort(port)` is therefore typed as an `EIP1193CoreProvider` (from [`eip-1193`](https://www.npmjs.com/package/eip-1193)): the methods a browser wallet, a JSON-RPC node and a plain HTTP node all serve. It offers no `wallet_*`, no node introspection and no subscriptions.
+
+When you know what the far end serves, name its method table. This is an unchecked claim, like a cast. The tables come from `eip-1193`, so add it as a direct dependency to import them (`pnpm add -D eip-1193`):
+
+```ts
+import type {WalletMethods, NodeMethods} from 'eip-1193';
+
+const wallet = providerOverPort<WalletMethods>(port); // wallet_switchEthereumChain and so on
+const node = providerOverPort<NodeMethods>(port); // the core methods plus the node extras (net_*, eth_subscribe, ...)
+```
+
+`serveProvider` accepts any provider with a `request`, whatever its method table.
+
 ## What crosses, and what does not
 
 - **Only `request` crosses.** Provider events (`accountsChanged`, `chainChanged`, subscriptions) do not: this is a transport for request/response callers, such as an indexer or a read-only client.
