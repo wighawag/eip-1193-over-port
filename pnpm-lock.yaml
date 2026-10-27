@@ -25,7 +25,7 @@ importers:
     dependencies:
       eip-1193:
         specifier: ^0.7.2
-        version: 0.7.2
+        version: 0.7.4
     devDependencies:
       '@types/node':
         specifier: ^25.2.0
@@ -589,8 +589,8 @@ packages:
     resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
-  eip-1193@0.7.2:
-    resolution: {integrity: sha512-eUcjhpfyibRsavyOY4vE2jGruKgh7gJyNjTjCS3WxgrP19LOoUN0yG1a1DmMHEzQiWfbzkXGVf2dLus5KXKBAg==}
+  eip-1193@0.7.4:
+    resolution: {integrity: sha512-NYtXIpM8dwiMmeJjdRkCzIdpTXU7ANdeO4fW+SpZE3Pia4ljnfXCyY40TZrQ5iJtaUMcJ1aSUsKxtdh0iwFiyw==}
 
   enquirer@2.4.1:
     resolution: {integrity: sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==}
@@ -1590,7 +1590,7 @@ snapshots:
 
   dotenv@16.6.1: {}
 
-  eip-1193@0.7.2: {}
+  eip-1193@0.7.4: {}
 
   enquirer@2.4.1:
     dependencies:
