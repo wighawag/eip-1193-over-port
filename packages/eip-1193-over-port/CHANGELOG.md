@@ -1,5 +1,11 @@
 # @eip-1193/over-port
 
+## 0.2.1
+
+### Patch Changes
+
+- 418a063: Package metadata: the issue tracker URL (`bugs`).
+
 ## 0.2.0
 
 ### Minor Changes
