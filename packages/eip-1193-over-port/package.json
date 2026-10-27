@@ -18,6 +18,9 @@
 		"directory": "packages/eip-1193-over-port"
 	},
 	"homepage": "https://github.com/wighawag/eip-1193-over-port#readme",
+	"bugs": {
+		"url": "https://github.com/wighawag/eip-1193-over-port/issues"
+	},
 	"publishConfig": {
 		"access": "public"
 	},
